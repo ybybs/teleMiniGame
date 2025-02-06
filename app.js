@@ -1,27 +1,27 @@
 // 初始化 Telegram Web App
-var tg = window.Telegram.WebApp;
+const tg = window.Telegram.WebApp;
 
 // 初始化 Mini App
 tg.ready();
 
 // 获取用户信息
-var user = tg.initDataUnsafe.user;
+const user = tg.initDataUnsafe.user;
 
 // 显示用户信息
 if (user) {
-  var userName = "".concat(user.first_name, " ").concat(user.last_name);
-  var userId = user.id;
-  console.log("Hello, ".concat(userName, " (ID: ").concat(userId, ")"));
+  const userName = `${user.first_name} ${user.last_name}`;
+  const userId = user.id;
+  console.log(`Hello, ${userName} (ID: ${userId})`);
 } else {
   console.log("User data is not available.");
 }
 
-// 绑定按钮点击事件
-var mainButton = tg.MainButton;
+// 绑定主按钮点击事件
+const mainButton = tg.MainButton;
 mainButton.setText("Click Me!");
 mainButton.show();
 
-mainButton.onClick(function () {
+mainButton.onClick(() => {
   tg.showPopup({
     title: "Button Clicked",
     message: "You clicked the main button!",
@@ -32,9 +32,40 @@ mainButton.onClick(function () {
 });
 
 // 关闭 Mini App 的逻辑
-var closeButton = document.getElementById("close-button");
+const closeButton = document.getElementById("close-button");
 if (closeButton) {
-  closeButton.addEventListener("click", function () {
+  closeButton.addEventListener("click", () => {
     tg.close();
+  });
+}
+
+// 支付测试逻辑
+const paymentButton = document.getElementById("payment-button");
+if (paymentButton) {
+  paymentButton.addEventListener("click", () => {
+    // 创建支付发票
+    const invoice = {
+      title: "Premium Subscription", // 商品标题
+      description: "Get access to premium features for 1 month.", // 商品描述
+      currency: "XTR", // 货币类型
+      prices: [
+        { label: "1 Month", amount: "5" } // 价格（以最小单位表示，例如 500 = $5.00）
+      ],
+      payload: { // 自定义数据，支付成功后返回
+        userId: tg.initDataUnsafe.user?.id || "unknown",
+        productId: "premium_1_month"
+      }
+    };
+
+    // 打开支付界面
+    tg.openInvoice(invoice, function (status) {
+      if (status === "paid") {
+        console.log("Payment successful!");
+        tg.showAlert("Payment successful! Thank you for your purchase.");
+      } else {
+        console.log("Payment failed or was cancelled.");
+        tg.showAlert("Payment failed or was cancelled.");
+      }
+    });
   });
 }
