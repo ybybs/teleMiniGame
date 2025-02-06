@@ -44,7 +44,7 @@ const paymentButton = document.getElementById("payment-button");
 if (paymentButton) {
   paymentButton.addEventListener("click", () => {
     // 创建支付发票
-    const invoice = botApi.createInvoiceLink(
+    const invoice = tg.createInvoiceLink(
         "Title", //title
         "Some description", //description
         "{}", //payload
