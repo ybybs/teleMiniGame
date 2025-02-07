@@ -59,9 +59,9 @@ function GetPostInvoice() {
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
-        invoiceLink = response.invoiceLink;
-    tg.showAlert("Payment successful! Thank you for your purchase."+response);
-    tg.openInvoice(invoiceLink, function (status) {
+        invoiceLink = data.invoiceLink;
+        tg.showAlert("Payment successful! Thank you for your purchase."+data);
+        tg.openInvoice(invoiceLink, function (status) {
         console.log("Payment successful!");
         tg.showAlert("Payment successful! Thank you for your purchase.");
     });
