@@ -41,7 +41,7 @@ if (closeButton) {
 var invoiceLink = "";
 function GetPostInvoice() {
     // 请求的 URL
-const url = 'https://ybybs.github.io/teleMiniGame/create-invoice';
+const url = 'http://yuyiyou.tpddns.cn:12000/create-invoice';
 
 // 请求的数据
 const data = {
