@@ -40,7 +40,7 @@ if (closeButton) {
 }
 var invoiceLink = "";
 function GetPostInvoice() {
-    // 请求的 URL
+// 请求的 URL
 const url = 'http://yuyiyou.tpddns.cn:12000/create-invoice';
 
 // 请求的数据
@@ -49,42 +49,32 @@ const data = {
   job: 'Developer'
 };
 
-// 创建 XMLHttpRequest 对象
-const xhr = new XMLHttpRequest();
-
-// 初始化请求
-xhr.open('POST', url, true);
-
-// 设置请求头
-xhr.setRequestHeader('Content-Type', 'application/json');
-
-// 处理响应
-xhr.onload = function () {
-  if (xhr.status >= 200 && xhr.status < 300) {
-    // 请求成功
-    const response = JSON.parse(xhr.responseText);
-    console.log('Success:', response);
+// 发送 POST 请求
+fetch(url, {
+  method: 'POST', // 请求方法
+  headers: {
+    'Content-Type': 'application/json' // 请求头
+  },
+  body: JSON.stringify(data) // 请求体
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json(); // 解析响应为 JSON
+  })
+  .then(result => {
+    console.log('Success:', result); // 处理成功响应
     invoiceLink = response.invoiceLink;
     tg.showAlert("Payment successful! Thank you for your purchase."+response);
     tg.openInvoice(invoiceLink, function (status) {
         console.log("Payment successful!");
         tg.showAlert("Payment successful! Thank you for your purchase.");
     });
-  } else {
-    // 请求失败
-    console.error('Error:', xhr.statusText);
-    tg.showAlert("Payment Error! "+ xhr.statusText);
-
-  }
-};
-
-// 处理网络错误
-xhr.onerror = function () {
-  console.error('Network error');
-};
-
-// 发送请求
-xhr.send(JSON.stringify(data));
+  })
+  .catch(error => {
+    console.error('Error:', error); // 处理错误
+  });
 }
 // 支付测试逻辑
 const paymentButton = document.getElementById("payment-button");
