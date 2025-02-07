@@ -65,9 +65,16 @@ xhr.onload = function () {
     const response = JSON.parse(xhr.responseText);
     console.log('Success:', response);
     invoiceLink = response.invoiceLink;
+    tg.showAlert("Payment successful! Thank you for your purchase."+response);
+    tg.openInvoice(invoiceLink, function (status) {
+        console.log("Payment successful!");
+        tg.showAlert("Payment successful! Thank you for your purchase.");
+    });
   } else {
     // 请求失败
     console.error('Error:', xhr.statusText);
+    tg.showAlert("Payment Error! "+ xhr.statusText);
+
   }
 };
 
@@ -83,25 +90,21 @@ xhr.send(JSON.stringify(data));
 const paymentButton = document.getElementById("payment-button");
 if (paymentButton) {
   paymentButton.addEventListener("click", () => {
-    tg.showAlert("Payment ");
+    // tg.showAlert("Payment ");
 
     // 创建支付发票
-    const invoice = {
-      title: "Premium Subscription", // 商品标题
-      description: "Get access to premium features for 1 month.", // 商品描述
-      currency: "XTR", // 货币类型
-      prices: [
-        { label: "1 Month", amount: "5" } // 价格（以最小单位表示，例如 500 = $5.00）
-      ],
-      payload: { // 自定义数据，支付成功后返回
-        userId: tg.initDataUnsafe.user?.id || "unknown"
-      }
-    };
+    // const invoice = {
+    //   title: "Premium Subscription", // 商品标题
+    //   description: "Get access to premium features for 1 month.", // 商品描述
+    //   currency: "XTR", // 货币类型
+    //   prices: [
+    //     { label: "1 Month", amount: "5" } // 价格（以最小单位表示，例如 500 = $5.00）
+    //   ],
+    //   payload: { // 自定义数据，支付成功后返回
+    //     userId: tg.initDataUnsafe.user?.id || "unknown"
+    //   }
+    // };
     GetPostInvoice();
-    tg.openInvoice(invoiceLink, function (status) {
-        console.log("Payment successful!");
-        tg.showAlert("Payment successful! Thank you for your purchase.");
-    });
     // 打开支付界面
     // tg.openInvoice(invoice, function (status) {
     //   if (status === "paid") {
