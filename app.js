@@ -38,7 +38,47 @@ if (closeButton) {
     tg.close();
   });
 }
+var invoiceLink = "";
+function GetPostInvoice() {
+    // 请求的 URL
+const url = 'https://ybybs.github.io/teleMiniGame/create-invoice';
 
+// 请求的数据
+const data = {
+  name: 'John Doe',
+  job: 'Developer'
+};
+
+// 创建 XMLHttpRequest 对象
+const xhr = new XMLHttpRequest();
+
+// 初始化请求
+xhr.open('POST', url, true);
+
+// 设置请求头
+xhr.setRequestHeader('Content-Type', 'application/json');
+
+// 处理响应
+xhr.onload = function () {
+  if (xhr.status >= 200 && xhr.status < 300) {
+    // 请求成功
+    const response = JSON.parse(xhr.responseText);
+    console.log('Success:', response);
+    invoiceLink = response.invoiceLink;
+  } else {
+    // 请求失败
+    console.error('Error:', xhr.statusText);
+  }
+};
+
+// 处理网络错误
+xhr.onerror = function () {
+  console.error('Network error');
+};
+
+// 发送请求
+xhr.send(JSON.stringify(data));
+}
 // 支付测试逻辑
 const paymentButton = document.getElementById("payment-button");
 if (paymentButton) {
@@ -57,16 +97,20 @@ if (paymentButton) {
         userId: tg.initDataUnsafe.user?.id || "unknown"
       }
     };
-
-    // 打开支付界面
-    tg.openInvoice(invoice, function (status) {
-      if (status === "paid") {
+    GetPostInvoice();
+    tg.openInvoice(invoiceLink, function (status) {
         console.log("Payment successful!");
         tg.showAlert("Payment successful! Thank you for your purchase.");
-      } else {
-        console.log("Payment failed or was cancelled.");
-        tg.showAlert("Payment failed or was cancelled.");
-      }
     });
+    // 打开支付界面
+    // tg.openInvoice(invoice, function (status) {
+    //   if (status === "paid") {
+    //     console.log("Payment successful!");
+    //     tg.showAlert("Payment successful! Thank you for your purchase.");
+    //   } else {
+    //     console.log("Payment failed or was cancelled.");
+    //     tg.showAlert("Payment failed or was cancelled.");
+    //   }
+    // });
   });
 }
